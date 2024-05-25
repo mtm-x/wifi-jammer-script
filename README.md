@@ -48,5 +48,5 @@ A deauth attack sends forged deauthentication packets from your machine to a cli
  
 # Note 
 1. While using the script use small y for yes and n for no
-2. This script will automatically put your wifi interface in monitor mode . So dont do that manually
+2. This script will automatically put your wifi interface in monitor mode .
 3. Educational purpose only
