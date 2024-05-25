@@ -3,6 +3,7 @@ RED="\e[31m"
 CYAN="\e[36m"
 GREEN="\e[32m"
 ENDCOLOR="\e[0m"
+YELL="\e[33m"
 YELLOW="33"
 ITALICYELLOW="\e[3;${YELLOW}m"
 echo -e "${RED}"
@@ -43,7 +44,7 @@ clear
 fi
 
 #Use at your own risk...
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "---------------------------------------------------"
 echo "-Would you like to start a moniter interface[y/n]?-"
 echo "---------------------------------------------------"
@@ -55,7 +56,7 @@ clear
 if [[ $MONIF == 'y' ]]; then
 echo ""
 iwconfig
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Please type the  wireless interface from above"
 echo -e "${ENDCOLOR}"
 echo ""
@@ -63,7 +64,7 @@ read WIRELESS
 [[ $WIRELESS == "" ]]
 sleep 1
 clear
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Starting interface on $WIRELESS..."
 echo -e "${ENDCOLOR}"
 sleep 1
@@ -72,7 +73,7 @@ sleep 4
 clear
 else
 echo ""
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Skipping..."
 echo -e "${ENDCOLOR}"
 sleep 2
@@ -88,12 +89,12 @@ wire=wlan0mon
 else
 wire=mon0
 fi
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Your new WiFI interface is $wire"
 echo -e "${ENDCOLOR}"
 clear
 
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "--------------------------------------------------"
 echo "-Would you like to dump the network traffic[y/n]?-"
 echo "--------------------------------------------------"
@@ -103,20 +104,20 @@ read DUMP
 clear
 if [[ $DUMP == 'y' ]]; then
 echo ""
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Dumping network traffic...[Ctrl+C to stop]"
 echo -e "${ENDCOLOR}"
 sleep 2
 airodump-ng $wire
 else
 echo ""
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Skipping..."
 echo -e "${ENDCOLOR}"
 sleep 2
 clear
 fi
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "---------------------------------------------------------------------------"
 echo "- Dump specified network traffic you want to jam . Press entry to continue"
 echo "---------------------------------------------------------------------------"
@@ -125,21 +126,21 @@ echo ""
 read sdump
 if [[ $sdump == "" ]]; then
 echo ""
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Please enter the network BSSID:"
 echo -e "${ENDCOLOR}"
 echo ""
 read BSSID
 [[ $BSSID == "" ]]
 echo ""
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Please enter the network channel:"
 echo -e "${ENDCOLOR}"
 echo ""
 read CHANNEL
 [[ $CHANNEL == "" ]]
 echo ""
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Dumping specific network traffic...[Ctrl+C to stop]"
 echo -e "${ENDCOLOR}"
 sleep 2
@@ -147,14 +148,14 @@ airodump-ng  -c $CHANNEL --bssid $BSSID $wire
 clear
 else
 echo ""
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Skipping..."
 echo -e "${ENDCOLOR}"
 sleep 2
 clear
 fi
 clear
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "-----------------------------------------------------------------------------------------------------------"
 echo "-Would you like to start Deauthentication attack(Jamming the AP) on the specified network traffic[y/n]?-"
 echo "-----------------------------------------------------------------------------------------------------------"
@@ -164,7 +165,7 @@ read deauth
 clear
 if [[ $deauth == 'y' ]]; then
 clear
-echo -e "${RED}"
+echo -e "${YELL}"
 echo "Sending Deauthentication packets to to specified network...[Ctrl+C to stop] "
 echo -e "${ENDCOLOR}"
 sleep 1
@@ -173,7 +174,9 @@ sleep 2
 clear
 else
 echo ""
+echo -e "${YELL}"
 echo "Skipping..."
+echo -e "${ENDCOLOR}"
 sleep 2
 clear
 fi
