@@ -30,7 +30,6 @@ echo "---                        Starts moniter interface                       
 echo "---                        Runs airodump-ng                                  ---"
 echo "---                        Dumps specified network traffic                   ---"
 echo "---                        Deauthenticates specified AP                      ---"
-echo "---                        Restores wireless interfaces                      ---"
 echo "--------------------------------------------------------------------------------"
 echo "------------------------------------NOTE----------------------------------------"
 echo "---                             Use small y/n                                ---"
