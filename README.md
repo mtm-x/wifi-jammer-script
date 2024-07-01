@@ -34,4 +34,4 @@ A deauth attack sends forged deauthentication packets from your machine to a cli
 
  
 
-Educational purpose only
+Educational purpose only :)
