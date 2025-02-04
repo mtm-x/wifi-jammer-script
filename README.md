@@ -9,26 +9,12 @@ A deauth attack sends forged deauthentication packets from your machine to a cli
 
 
 
-# Installation
+# Usage
 
-1. Clone this repo
-
-  ```
-  git clone https://github.com/mtm-x/wifi-jammer-script
-  ```
-2. change directory to the cloned repo
-
-  ```
-  cd wifi-jammer-script
-   ```
-3.Now set executable permission for wifijammer.sh
-
-  ```
-  chmod +x wifijammer.sh  
-  ```
-4. Now execute with root permission
-
+## Simply run
 ```
+  wget https://raw.githubusercontent.com/mtm-x/wifi-jammer-script/refs/heads/main/wifijammer.sh
+  chmod +x wifijammer.sh  
   sudo ./wifijammer.sh
 ```
 
